@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Resume - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="upload-wrapper">
+        <div class="upload-header text-center">
+            <h1 class="page-title">Upload Your Resume</h1>
+            <p class="page-subtitle">Upload your resume in PDF or DOCX format to analyze your skills and get matched with top tech jobs.</p>
+        </div>
+
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm" class="upload-card">
+            <div class="drop-zone" id="dropZone">
+                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div class="drop-text">
+                    <h3>Drag & Drop your resume here</h3>
+                    <p>or <span class="browse-link">browse from your computer</span></p>
+                </div>
+                <input type="file" name="resume_file" id="resumeFileInput" accept=".pdf,.docx,.doc" required hidden>
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <span class="file-name" id="fileName">No file selected</span>
+                    <span class="file-size" id="fileSize"></span>
+                </div>
+            </div>
+
+            <div class="upload-formats">
+                <span>Supported formats: <strong>PDF (.pdf)</strong> and <strong>Word (.docx)</strong></span>
+            </div>
+
+            <div class="form-actions text-center">
+                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                    <span id="btnText">Analyze & Match Resume</span>
+                    <span id="btnSpinner" class="spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </form>
+
+        <div class="sample-notice text-center">
+            <p>Don't have a resume handy? Try our sample resumes:</p>
+            <div class="sample-btn-group">
+                <a href="{{ url_for('upload_sample', sample_name='john_doe') }}" class="btn-link">John Doe (Python & ML Engineer)</a>
+                <span class="divider">|</span>
+                <a href="{{ url_for('upload_sample', sample_name='jane_smith') }}" class="btn-link">Jane Smith (Data Analyst)</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

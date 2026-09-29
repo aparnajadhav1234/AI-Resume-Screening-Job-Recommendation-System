@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Database - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="header-action-row">
+        <div>
+            <h1 class="page-title">Available Job Database</h1>
+            <p class="page-subtitle">Showing {{ jobs|length }} active positions across software, data, and AI domains.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload Resume to Match</a>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        {% for job in jobs %}
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h3>{{ job.job_title }}</h3>
+                    <p class="text-muted">{{ job.company }} &bull; {{ job.location }} ({{ job.experience_level }})</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>{{ job.description }}</p>
+                <div class="margin-top">
+                    <strong>Required Skills:</strong>
+                    <div class="skill-tags margin-top">
+                        {% for skill in job.required_skills.split(',') %}
+                        <span class="tag tag-matched">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

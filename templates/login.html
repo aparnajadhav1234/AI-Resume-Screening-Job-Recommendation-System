@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header text-center">
+                <div class="auth-icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                </div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your account to upload resumes and access personalized job recommendations.</p>
+            </div>
+
+            <form action="{{ url_for('login') }}" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="identity" class="form-label">Email Address or Username</label>
+                    <input type="text" id="identity" name="identity" class="form-input" placeholder="e.g. john@example.com or johndoe" required value="{{ request.form.get('identity', '') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                    Sign In to Account
+                </button>
+            </form>
+
+            <div class="auth-footer text-center">
+                <p>Don't have an account yet? <a href="{{ url_for('signup') }}" class="auth-link">Create an Account</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

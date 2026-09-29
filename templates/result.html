@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Analysis - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="header-action-row">
+        <div>
+            <h1 class="page-title">Resume Analysis Results</h1>
+            <p class="page-subtitle">Extracted candidate details, contact information, and skill inventory.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('recommendations', resume_id=resume.id) }}" class="btn btn-primary btn-lg">
+                View Job Recommendations &rarr;
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        <!-- Candidate Profile Summary Card -->
+        <div class="card profile-card">
+            <div class="card-header">
+                <div class="avatar-circle">
+                    {{ resume.candidate_name[0] if resume.candidate_name else 'C' }}
+                </div>
+                <div>
+                    <h2>{{ resume.candidate_name }}</h2>
+                    <p class="text-muted">Uploaded: {{ resume.uploaded_at }}</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="info-group">
+                    <span class="info-label">Email Address</span>
+                    <span class="info-value">{{ resume.email }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Phone Number</span>
+                    <span class="info-value">{{ resume.phone }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Filename</span>
+                    <span class="info-value">{{ resume.filename }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detected Technical Skills Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Detected Technical Skills</h3>
+                <span class="badge badge-primary">{{ skills|length }} Skills Found</span>
+            </div>
+            <div class="card-body">
+                {% if skills %}
+                <div class="skill-tags">
+                    {% for skill in skills %}
+                    <span class="tag tag-matched">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No explicit technical skills detected from the known dictionary.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Structured Sections -->
+    <div class="card margin-top">
+        <div class="card-header">
+            <h3>Extracted Resume Sections</h3>
+        </div>
+        <div class="card-body">
+            <div class="section-box">
+                <h4 class="section-box-title">Education</h4>
+                <div class="section-box-content">{{ resume.education }}</div>
+            </div>
+            <div class="section-box">
+                <h4 class="section-box-title">Work Experience</h4>
+                <div class="section-box-content">{{ resume.experience }}</div>
+            </div>
+            <div class="section-box">
+                <h4 class="section-box-title">Projects</h4>
+                <div class="section-box-content">{{ resume.projects }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation-actions text-center margin-top">
+        <a href="{{ url_for('recommendations', resume_id=resume.id) }}" class="btn btn-primary btn-lg">
+            Calculate Matching Scores & View Top Jobs
+        </a>
+        <a href="{{ url_for('dashboard', resume_id=resume.id) }}" class="btn btn-secondary btn-lg">
+            Go to Candidate Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

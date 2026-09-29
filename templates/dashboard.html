@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="header-action-row">
+        <div>
+            <h1 class="page-title">Candidate Analytics Dashboard</h1>
+            <p class="page-subtitle">Overview of resume statistics, job matching metrics, and skill gap metrics.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('upload') }}" class="btn btn-outline">Upload New Resume</a>
+            <a href="{{ url_for('recommendations', resume_id=resume.id) }}" class="btn btn-primary">Top Recommendations</a>
+        </div>
+    </div>
+
+    <!-- Stat Cards Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon icon-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="stat-details">
+                <span class="stat-value">{{ skills|length }}</span>
+                <span class="stat-label">Detected Skills</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-indigo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </div>
+            <div class="stat-details">
+                <span class="stat-value">{{ total_jobs_count }}</span>
+                <span class="stat-label">Jobs Analyzed</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-cyan">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <div class="stat-details">
+                <span class="stat-value">{{ top_match.match_percentage if top_match else '0' }}%</span>
+                <span class="stat-label">Highest Match Score</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-sky">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="stat-details">
+                <span class="stat-value font-sm">{{ top_match.job_title if top_match else 'None' }}</span>
+                <span class="stat-label">Top Recommended Role</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-2col margin-top">
+        <!-- Candidate Overview Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Candidate Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="dash-user-row">
+                    <div class="avatar-circle font-lg">
+                        {{ resume.candidate_name[0] if resume.candidate_name else 'C' }}
+                    </div>
+                    <div>
+                        <h3>{{ resume.candidate_name }}</h3>
+                        <p class="text-muted">{{ resume.email }} &bull; {{ resume.phone }}</p>
+                    </div>
+                </div>
+
+                <div class="margin-top">
+                    <h4>Skill Inventory</h4>
+                    <div class="skill-tags">
+                        {% for skill in skills %}
+                        <span class="tag tag-matched">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Skill Gap Highlights -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Priority Skill Recommendations</h3>
+            </div>
+            <div class="card-body">
+                {% if top_match and top_match.missing_skills %}
+                <p>To reach 100% suitability for your top match (<strong>{{ top_match.job_title }}</strong>), consider acquiring these skills:</p>
+                <div class="skill-tags margin-y">
+                    {% for m_skill in top_match.missing_skills %}
+                    <span class="tag tag-missing">&plus; {{ m_skill }}</span>
+                    {% endfor %}
+                </div>
+                <div class="tip-box">
+                    <strong>Pro Tip:</strong> Adding projects demonstrating these skills will boost your TF-IDF vector similarity score significantly.
+                </div>
+                {% else %}
+                <div class="success-box">
+                    <strong>Great News!</strong> You possess all required technical skills for your top job match.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Results Table -->
+    <div class="card margin-top">
+        <div class="card-header">
+            <h3>Analyzed Job Match Results</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Match Score</th>
+                            <th>Matching Skills</th>
+                            <th>Missing Skills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in recommendations %}
+                        <tr>
+                            <td><strong>#{{ loop.index }}</strong></td>
+                            <td>{{ rec.job_title }}</td>
+                            <td>{{ rec.company }}</td>
+                            <td>{{ rec.location }}</td>
+                            <td>
+                                <span class="badge badge-primary">{{ rec.match_percentage }}%</span>
+                            </td>
+                            <td>{{ rec.matching_skills|join(', ') }}</td>
+                            <td>
+                                {% if rec.missing_skills %}
+                                <span class="text-danger">{{ rec.missing_skills|join(', ') }}</span>
+                                {% else %}
+                                <span class="text-success">&check; None</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

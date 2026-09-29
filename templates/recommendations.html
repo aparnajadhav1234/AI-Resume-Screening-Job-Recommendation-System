@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Top Recommended Jobs - SkillMatch AI{% endblock %}
+
+{% block content %}
+<div class="container section">
+    <div class="header-action-row">
+        <div>
+            <h1 class="page-title">Top 5 Recommended Jobs</h1>
+            <p class="page-subtitle">Ranked using TF-IDF Vectorization & Cosine Similarity for {{ resume.candidate_name }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard', resume_id=resume.id) }}" class="btn btn-secondary">
+                View Full Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if recommendations %}
+    <div class="recommendations-list">
+        {% for rec in recommendations %}
+        <div class="card recommendation-card">
+            <div class="rec-header">
+                <div class="rec-title-group">
+                    <span class="rank-badge">#{{ loop.index }}</span>
+                    <div>
+                        <h2 class="rec-job-title">{{ rec.job_title }}</h2>
+                        <div class="rec-meta">
+                            <span class="company-name">{{ rec.company }}</span>
+                            <span class="meta-dot">&bull;</span>
+                            <span class="location">{{ rec.location }}</span>
+                            <span class="meta-dot">&bull;</span>
+                            <span class="exp-level">{{ rec.experience_level }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="match-score-box">
+                    <div class="score-number">{{ rec.match_percentage }}%</div>
+                    <div class="score-label">Match Score</div>
+                </div>
+            </div>
+
+            <!-- Match Progress Meter -->
+            <div class="progress-bar-container margin-y">
+                <div class="progress-bar-fill" style="width: {{ rec.match_percentage }}%;"></div>
+            </div>
+
+            <div class="rec-body">
+                <div class="grid-2col">
+                    <!-- Matching Skills -->
+                    <div class="skill-box skill-box-matched">
+                        <h4>Matching Skills ({{ rec.matching_skills|length }})</h4>
+                        <div class="skill-tags">
+                            {% for skill in rec.matching_skills %}
+                            <span class="tag tag-matched">&check; {{ skill }}</span>
+                            {% else %}
+                            <span class="text-muted">No explicit overlap with required skills list</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Missing Skills -->
+                    <div class="skill-box skill-box-missing">
+                        <h4>Missing Skills ({{ rec.missing_skills|length }})</h4>
+                        <div class="skill-tags">
+                            {% for skill in rec.missing_skills %}
+                            <span class="tag tag-missing">&plus; {{ skill }}</span>
+                            {% else %}
+                            <span class="tag tag-matched">All required skills matched!</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Gap & Recommendations -->
+                <div class="gap-analysis-box margin-top">
+                    <h4>Skill Gap & Learning Suggestions</h4>
+                    <ul class="suggestion-list">
+                        {% for sugg in rec.suggestions %}
+                        <li>
+                            <svg class="suggestion-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                            <span>{{ sugg }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Job Description Accordion/Details -->
+                <details class="job-desc-details margin-top">
+                    <summary>View Full Job Description</summary>
+                    <p class="job-desc-text">{{ rec.description }}</p>
+                    <div class="req-skills-footer">
+                        <strong>Required Skills:</strong> {{ rec.required_skills }}
+                    </div>
+                </details>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <h3>No Job Recommendations Available</h3>
+        <p>Please upload a resume first to run matching models.</p>
+        <a href="{{ url_for('upload') }}" class="btn btn-primary margin-top">Upload Resume</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

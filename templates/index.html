@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - AI Resume Screening & Job Recommendation{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-content">
+            <span class="hero-pill">Powered by Machine Learning & NLP</span>
+            <h1 class="hero-title">AI-Based Resume Screening & Job Recommendation System</h1>
+            <p class="hero-subtitle">
+                Upload your resume in PDF or DOCX format. Our intelligent NLP engine extracts your technical skills, compares your profile with active job descriptions using TF-IDF Vectorization & Cosine Similarity, and recommends your best job matches.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Upload Resume
+                </a>
+                <a href="{{ url_for('browse_jobs') }}" class="btn btn-secondary btn-lg">
+                    Browse 20+ Jobs
+                </a>
+            </div>
+        </div>
+        <div class="hero-card-preview">
+            <div class="preview-card">
+                <div class="preview-header">
+                    <span class="badge badge-success">94.5% Match</span>
+                    <span class="preview-company">TechSolutions Inc.</span>
+                </div>
+                <h3>Python & AI Engineer</h3>
+                <div class="skill-tags">
+                    <span class="tag tag-matched">Python</span>
+                    <span class="tag tag-matched">Flask</span>
+                    <span class="tag tag-matched">Machine Learning</span>
+                    <span class="tag tag-missing">Docker</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: 94.5%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- System Workflow Steps -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title text-center">How It Works</h2>
+        <p class="section-subtitle text-center">Four simple automated steps to analyze your resume and get matched</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-blue">1</div>
+                <h3>1. Resume Parsing</h3>
+                <p>Extracts structured text from PDF and DOCX documents while validating candidate contact details and experience sections.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-indigo">2</div>
+                <h3>2. Skill Extraction</h3>
+                <p>Identifies key technical skills like Python, Java, SQL, Machine Learning, TensorFlow, React, Power BI, and Git.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-cyan">3</div>
+                <h3>3. TF-IDF & Cosine Match</h3>
+                <p>Computes similarity vectors between candidate resume content and 20+ job descriptions without fake heuristics.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-sky">4</div>
+                <h3>4. Skill Gap Analysis</h3>
+                <p>Discovers missing technical skills for top recommended positions and suggests specific learning paths.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sample Resumes Quick Test Section -->
+<section class="section bg-alt">
+    <div class="container text-center">
+        <h2 class="section-title">Want a Quick Test?</h2>
+        <p class="section-subtitle">Use one of our pre-formatted sample resumes to test the pipeline instantly.</p>
+        <div class="sample-actions">
+            <a href="{{ url_for('upload_sample', sample_name='john_doe') }}" class="btn btn-outline">
+                Test with John Doe (Python/ML Resume)
+            </a>
+            <a href="{{ url_for('upload_sample', sample_name='jane_smith') }}" class="btn btn-outline">
+                Test with Jane Smith (Data Analyst Resume)
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
